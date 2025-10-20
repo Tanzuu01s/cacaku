@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Gombalan ku</title>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --pink1: #ffd6eb;
+      --pink2: #ff9cc9;
+      --purple: #e9c7ff;
+      --accent: #ff4d94;
+    }
+
+    * {
+      box-sizing: border-box;
+      cursor: url('https://cdn-icons-png.flaticon.com/512/616/616408.png') 16 16, auto;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Quicksand", sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, var(--pink1), var(--purple));
+      overflow: hidden;
+      color: var(--accent);
+      flex-direction: column;
+      position: relative;
+    }
+
+    .wrap {
+      width: min(880px, 92vw);
+      padding: 28px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(255, 255, 255, 0.96));
+      border-radius: 20px;
+      border: 4px solid rgba(255, 153, 204, 0.6);
+      box-shadow: 0 18px 40px rgba(255, 105, 180, 0.12);
+      text-align: center;
+      position: relative;
+      overflow: visible;
+      z-index: 2;
+    }
+
+    .cover-img {
+      width: 180px;
+      height: 180px;
+      border-radius: 18px;
+      object-fit: cover;
+      margin: 0 auto 18px;
+      display: block;
+      transform: translateY(-6px);
+      transition: transform .6s ease, opacity .6s ease;
+      opacity: 0;
+    }
+
+    .content {
+      max-width: 720px;
+      margin: 0 auto;
+      font-size: 1.15rem;
+      line-height: 1.7;
+      color: var(--accent);
+      min-height: 72px;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: all .55s cubic-bezier(.2, .9, .3, 1);
+    }
+
+    .wrap.show .cover-img {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    .wrap.show .content {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .controls {
+      margin-top: 18px;
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    button,
+    .audio-toggle {
+      background: linear-gradient(180deg, var(--pink2), var(--accent));
+      border: none;
+      color: white;
+      padding: 10px 18px;
+      border-radius: 28px;
+      font-weight: 700;
+      font-family: "Quicksand", sans-serif;
+      cursor: pointer;
+      box-shadow: 0 8px 18px rgba(255, 77, 148, 0.16);
+      transition: transform .18s ease, opacity .18s;
+    }
+
+    button:active {
+      transform: translateY(2px) scale(.995);
+    }
+
+    button[disabled] {
+      opacity: .5;
+      cursor: default;
+      transform: none;
+    }
+
+    .title {
+      font-family: "Dancing Script", cursive;
+      font-weight: 600;
+      font-size: 1.6rem;
+      color: #b02b6b;
+    }
+
+    .page-indicator {
+      font-weight: 600;
+      color: #7b2b56;
+      margin-left: 8px;
+    }
+
+    .kata-btn {
+      margin-top: 20px;
+    }
+
+    .popup {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 200, 230, 0.4);
+      backdrop-filter: blur(5px);
+      z-index: 10;
+      animation: fadeIn 0.4s ease;
+    }
+
+    .popup.show {
+      display: flex;
+    }
+
+    .popup-content {
+      background: linear-gradient(180deg, #fff0f7, #ffe6f2);
+      border-radius: 20px;
+      border: 3px solid rgba(255, 153, 204, 0.5);
+      box-shadow: 0 10px 40px rgba(255, 105, 180, 0.25);
+      padding: 28px 38px;
+      text-align: center;
+      max-width: 420px;
+      color: #b02b6b;
+      font-weight: 600;
+      font-size: 1.1rem;
+      animation: popIn 0.4s ease;
+      font-family: "Quicksand", sans-serif;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0
+      }
+
+      to {
+        opacity: 1
+      }
+    }
+
+    @keyframes popIn {
+      from {
+        transform: scale(0.8);
+        opacity: 0;
+      }
+
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    /* 🌸 bunga jatuh */
+    .flower {
+      position: fixed;
+      top: -10px;
+      font-size: 20px;
+      animation: fall linear forwards;
+      opacity: 0.9;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    @keyframes fall {
+      0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+      }
+
+      100% {
+        transform: translateY(110vh) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    /* bunga klik */
+    .click-bunga {
+      position: fixed;
+      pointer-events: none;
+      animation: bloom 1s ease-out forwards;
+      font-size: 22px;
+    }
+
+    @keyframes bloom {
+      0% {
+        transform: scale(0) translateY(0);
+        opacity: 1;
+      }
+
+      100% {
+        transform: scale(1.8) translateY(-60px);
+        opacity: 0;
+      }
+    }
+
+    @media (max-width:520px) {
+      .cover-img {
+        width: 140px;
+        height: 140px;
+      }
+
+      .content {
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap" id="card">
+    <div class="top-row" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;">
+      <div class="title">💖 Gombalan Buat Kamu 💖</div>
+      <button id="audioToggle" class="audio-toggle">⏵️ Play Musik</button>
+    </div>
+
+    <img id="cover" class="cover-img" src="hiu.png" alt="Foto Gombalan">
+
+    <div id="textArea" class="content" aria-live="polite"></div>
+
+    <div class="controls">
+      <button id="prevBtn">⬅️ Sebelumnya</button>
+      <div class="page-indicator" id="pageIndicator">1 / 5</div>
+      <button id="nextBtn">Berikutnya ➡️</button>
+    </div>
+
+    <button id="kataBtn" class="kata-btn">ISI HATIKU</button>
+  </div>
+
+  <!-- Popup -->
+  <div class="popup" id="popup">
+    <div class="popup-content">
+      <div id="popupText"></div>
+      <button id="closePopup" style="margin-top:16px;">💞 Tutup</button>
+    </div>
+  </div>
+
+  <audio id="clickSound" src="" preload="auto"></audio>
+  <audio id="bgMusic" src="mp3/you & i.mp3" loop preload="auto"></audio>
+
+  <script>
+    const gombalans = [
+      { img: "Foto/hiu.png", text: "Ikan hiu melayang layang I love you sayang", kata: "I Like You, I Love You, I Miss You, I Need You, I Want You, Ahh ku hampir gila karna mu" },
+      { img: "Foto/bunga.jpg", text: "Caca tuh kayak bunga kuning ini… nggak perlu usaha keras buat keliatan spesial", kata: "Kamu tau aku senang saat kamu menceritakan dirimu kepada aku, Caa apapun itu kamu spesial dimata ku, hehe ku ga masalah kolow selalu dibilang bukan siapa-siapamu tapi aku pengen kamu tau kolow aku menganggap kamu orang yang paling spesial dalam hidupku" },
+      { img: "Foto/selang.jpg", text: "Bapak Kamu Selang ya? ehh ga mngkin juga cewe secantik kamu bapak selang, haha ga jelas ya? karna yang jelas itu cinta ku pada mu", kata: "Caa, caca itu cantik jangan pernah nganggap diri caca jelek, Mau dibandingin dengan jutaan Wanita dimata ku kamu itu paling cantik, bener kata mu aku dah buta karna cinta" },
+      { img: "Foto/bansin.png", text: "Kenapa mobil butuh bensin??? soalnya kalau aku butuh kamu, cihuyyy hahaha", kata: "Caa, bener kata mu aku terlalu bergantungan pada mu, kamu itu seperti semangat yang tiba-tiba muncul dalam hidup ku, Caa kolow caca marah jangan pernah diamin aku yaaaa " },
+      { img: "Foto/manisbanget.jpg", text: "Coba liat fotonya, Ni aku bisa diabetes tau! Senyum mu itu bisa ngalahin manisnya ratusan pabrik gula, ahhh gila manis banget ANJIRRRR", kata: "Senyum manis mu ga bakal ku buat pudar, aku ga bakal buat kamu nangis sakit hati karna ku, aku bener bener ga bisa marah samamu ini terlalu gila buat ku, aku ga tau masa depan ku gimana tapi ku harap ada kamu disana" },
+    ];
+
+    const cover = document.getElementById("cover");
+    const textArea = document.getElementById("textArea");
+    const card = document.getElementById("card");
+    const prevBtn = document.getElementById("prevBtn");
+    const nextBtn = document.getElementById("nextBtn");
+    const pageIndicator = document.getElementById("pageIndicator");
+    const clickSound = document.getElementById("clickSound");
+    const bgMusic = document.getElementById("bgMusic");
+    const audioToggle = document.getElementById("audioToggle");
+    const kataBtn = document.getElementById("kataBtn");
+    const popup = document.getElementById("popup");
+    const popupText = document.getElementById("popupText");
+    const closePopup = document.getElementById("closePopup");
+
+    let idx = 0, typingTimer = null;
+
+    function playClick() {
+      try { clickSound.currentTime = 0; clickSound.play(); } catch { }
+    }
+
+    function renderGombal(newIndex) {
+      prevBtn.disabled = true;
+      nextBtn.disabled = true;
+      playClick();
+      card.classList.remove("show");
+      setTimeout(() => {
+        idx = newIndex;
+        const item = gombalans[idx];
+        cover.src = item.img;
+        pageIndicator.textContent = `${idx + 1} / ${gombalans.length}`;
+        textArea.innerHTML = "";
+        typeText(item.text, () => {
+          card.classList.add("show");
+          prevBtn.disabled = false;
+          nextBtn.disabled = false;
+        });
+      }, 320);
+    }
+
+    function next() {
+      renderGombal((idx + 1) % gombalans.length);
+    }
+
+    function prev() {
+      renderGombal((idx - 1 + gombalans.length) % gombalans.length);
+    }
+
+    function typeText(text, cb) {
+      if (typingTimer) clearTimeout(typingTimer);
+      let i = 0;
+      function step() {
+        if (i <= text.length) {
+          textArea.innerHTML = text.slice(0, i).replace(/\n/g, "<br>");
+          i++;
+          typingTimer = setTimeout(step, 28);
+        } else if (cb) cb();
+      }
+      step();
+    }
+
+    kataBtn.addEventListener("click", () => {
+      playClick();
+      popupText.textContent = gombalans[idx].kata;
+      popup.classList.add("show");
+    });
+
+    closePopup.addEventListener("click", () => {
+      playClick();
+      popup.classList.remove("show");
+    });
+
+    let musicPlaying = false;
+    audioToggle.addEventListener("click", () => {
+      playClick();
+      if (!musicPlaying) {
+        bgMusic.play().catch(() => { });
+        audioToggle.textContent = "⏸️ Pause Musik";
+        musicPlaying = true;
+      } else {
+        bgMusic.pause();
+        audioToggle.textContent = "⏵️ Play Musik";
+        musicPlaying = false;
+      }
+    });
+
+    function init() {
+      pageIndicator.textContent = `1 / ${gombalans.length}`;
+      cover.src = gombalans[0].img;
+      typeText(gombalans[0].text, () => card.classList.add("show"));
+    }
+
+    init();
+    prevBtn.addEventListener("click", prev);
+    nextBtn.addEventListener("click", next);
+
+    // 🌸 efek bunga jatuh terus
+    const bungaEmoji = ["🌸", "🌷", "🌼", "🌹", "💮", "🌺"];
+    setInterval(() => {
+      const f = document.createElement("div");
+      f.className = "flower";
+      f.textContent = bungaEmoji[Math.floor(Math.random() * bungaEmoji.length)];
+      f.style.left = Math.random() * 100 + "vw";
+      f.style.animationDuration = (4 + Math.random() * 4) + "s";
+      f.style.fontSize = (16 + Math.random() * 14) + "px";
+      document.body.appendChild(f);
+      setTimeout(() => f.remove(), 8000);
+    }, 500);
+
+    // 🌼 klik muncul bunga kecil
+    document.addEventListener("click", (e) => {
+      const b = document.createElement("div");
+      b.className = "click-bunga";
+      b.textContent = bungaEmoji[Math.floor(Math.random() * bungaEmoji.length)];
+      b.style.left = e.pageX + "px";
+      b.style.top = e.pageY + "px";
+      document.body.appendChild(b);
+      setTimeout(() => b.remove(), 1000);
+    });
+  </script>
+</body>
+</html>
